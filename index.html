@@ -7,11 +7,29 @@
 </head>
 <body>
     <h1>Upload PDF to Translate</h1>
-    <form id="uploadForm">
+    <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" id="pdfFile" accept="application/pdf">
-        <button type="submit">Translate</button>
+        <button type="button" onclick="uploadPDF()">Translate</button>
     </form>
     <div id="translationResult"></div>
-    <script src="app.js"></script>
+    <script>
+        function uploadPDF() {
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            const formData = new FormData();
+            formData.append('pdf', pdfFile);
+
+            fetch('/translate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('translationResult').innerText = data.translation;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>
